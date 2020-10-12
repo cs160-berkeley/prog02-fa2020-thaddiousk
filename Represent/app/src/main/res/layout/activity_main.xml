@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#E94F37"
+    android:scrollbarDefaultDelayBeforeFade="@integer/google_play_services_version"
+    tools:context=".MainActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
+        android:layout_width="match_parent"
+        android:layout_height="90dp"
+        android:background="#3F88C5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="218dp"
+            android:layout_height="65dp"
+            android:background="@drawable/rounded_red_border_white_bg"
+            android:fontFamily="@font/condiment"
+            android:text="Represent!"
+            android:textAlignment="center"
+            android:textSize="40sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <VideoView
+        android:id="@+id/flag"
+        android:layout_width="218dp"
+        android:layout_height="128dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.502"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
+        app:layout_constraintVertical_bias="0.025" />
+
+    <Button
+        android:id="@+id/currentLocation"
+        android:layout_width="218dp"
+        android:layout_height="45dp"
+        android:background="@drawable/rounded_blue_border_green_bg"
+        android:fontFamily="@font/rationale"
+        android:onClick="curLocationSearch"
+        android:text="Current Location"
+        android:textAlignment="center"
+        android:textSize="22sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.502"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout2"
+        app:layout_constraintVertical_bias="0.083" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout2"
+        android:layout_width="355dp"
+        android:layout_height="101dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/flag"
+        app:layout_constraintVertical_bias="0.074">
+
+        <EditText
+            android:id="@+id/street"
+            android:layout_width="165dp"
+            android:layout_height="45dp"
+            android:background="@drawable/rounded_blue_border_white_bg"
+            android:fontFamily="@font/rationale"
+            android:hint="street"
+            android:inputType="textPostalAddress"
+            android:textAlignment="center"
+            android:textSize="18dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/state"
+            android:layout_width="165dp"
+            android:layout_height="45dp"
+            android:background="@drawable/rounded_blue_border_white_bg"
+            android:fontFamily="@font/rationale"
+            android:hint="state"
+            android:inputType="textPostalAddress"
+            android:textAlignment="center"
+            android:textSize="18dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/street"
+            app:layout_constraintVertical_bias="1.0" />
+
+        <EditText
+            android:id="@+id/zip"
+            android:layout_width="125dp"
+            android:layout_height="45dp"
+            android:layout_marginStart="168dp"
+            android:background="@drawable/rounded_blue_border_white_bg"
+            android:fontFamily="@font/rationale"
+            android:hint="zip code"
+            android:inputType="textPostalAddress"
+            android:textAlignment="center"
+            android:textSize="18dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/street"
+            app:layout_constraintVertical_bias="1.0" />
+
+        <EditText
+            android:id="@+id/city"
+            android:layout_width="125dp"
+            android:layout_height="45dp"
+            android:layout_marginStart="3dp"
+            android:background="@drawable/rounded_blue_border_white_bg"
+            android:fontFamily="@font/rationale"
+            android:hint="city"
+            android:inputType="textPostalAddress"
+            android:textAlignment="center"
+            android:textSize="18dp"
+            app:layout_constraintStart_toEndOf="@+id/street"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="59dp"
+            android:layout_height="101dp"
+            android:background="@drawable/rounded_blue_border_green_bg"
+            android:onClick="addressSearch"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <Button
+        android:id="@+id/randomLocation"
+        android:layout_width="218dp"
+        android:layout_height="45dp"
+        android:background="@drawable/rounded_blue_border_green_bg"
+        android:fontFamily="@font/rationale"
+        android:onClick="randomSearch"
+        android:text="Random Location"
+        android:textAlignment="center"
+        android:textSize="22sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.502"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/currentLocation"
+        app:layout_constraintVertical_bias="0.096" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
