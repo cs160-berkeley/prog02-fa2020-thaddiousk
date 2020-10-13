@@ -9,6 +9,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -24,8 +25,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.VideoView;
 
+import com.google.android.gms.common.api.Response;
 import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONException;
@@ -64,16 +67,35 @@ public class MainActivity extends AppCompatActivity {
 
     public void addressSearch(View view) throws IOException {
         TextView street = (TextView) findViewById(R.id.street);
-        String inputStr = street.getText().toString().replace(" ", "+").trim();
-        TextView city = (TextView) findViewById(R.id.city);
-        inputStr = inputStr.concat(city.getText().toString().replace(" ", "+").trim());
-        TextView state = (TextView) findViewById(R.id.state);
-        inputStr = inputStr.concat(state.getText().toString().replace(" ", "+").trim());
-        TextView zip = (TextView) findViewById(R.id.zip);
-        inputStr = inputStr.concat(zip.getText().toString().replace(" ", "+").trim());
-        LatLng curLocation = getLocationFromAddress(MainActivity.this, inputStr);
 
-        Log.i("LatLng:", curLocation.latitude + " " + curLocation.longitude);
+        if (street.getText().toString().equals("") || street.getText().toString().equals("")) {
+            Toast.makeText(view.getContext(), "Please enter an address", Toast.LENGTH_LONG).show();
+            return;
+        }
+        String inputStr = street.getText().toString().replace(" ", "%20").trim().concat("%20");
+        TextView city = (TextView) findViewById(R.id.city);
+        if (city.getText().toString().equals("") || city.getText().toString().equals("")) {
+            Toast.makeText(view.getContext(), "Please enter a valid city", Toast.LENGTH_LONG).show();
+            return;
+        }
+        inputStr = inputStr.concat(city.getText().toString().replace(" ", "%20").trim().concat("%20"));
+        TextView state = (TextView) findViewById(R.id.state);
+        if (state.getText().toString().equals("") || state.getText().toString().equals("")) {
+            Toast.makeText(view.getContext(), "Please enter a valid state", Toast.LENGTH_LONG).show();
+            return;
+        }
+        inputStr = inputStr.concat(state.getText().toString().replace(" ", "%20").trim().concat("%20"));
+        TextView zip = (TextView) findViewById(R.id.zip);
+        if (zip.getText().toString().equals("") || zip.getText().toString().equals("")) {
+            Toast.makeText(view.getContext(), "Please enter a zip code", Toast.LENGTH_LONG).show();
+            return;
+        }
+        inputStr = inputStr.concat(zip.getText().toString().replace(" ", "%20").trim());
+
+        Intent intent = new Intent(view.getContext(), CongressionalView.class);
+        String msg = "address";
+        intent.putExtra(msg, inputStr);
+        startActivity(intent);
 
         // https://maps.googleapis.com/maps/api/geocode/json?address=
         // API Key: AIzaSyDy5rAPx5q5u01TReZcLgvH54Xo5OHgFRY
@@ -103,14 +125,42 @@ public class MainActivity extends AppCompatActivity {
         return p1;
     }
 
-    public void curLocationSearch(View view) {
+    public void curLocationSearch(final View view) throws IOException {
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 
         locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(@NonNull Location location) {
                 LatLng curLoc = new LatLng(location.getLatitude(), location.getLongitude());
-                Log.i("LatLng:", curLoc.latitude + " " + curLoc.longitude);
+
+                Geocoder geocoder;
+                List<Address> addresses;
+                geocoder = new Geocoder(view.getContext(), Locale.getDefault());
+
+                String street = null;
+                String city = null;
+                String state = null;
+                String country = null;
+                String postal = null;
+                String knownName = null;
+
+                try {
+                    addresses = geocoder.getFromLocation(curLoc.latitude, curLoc.longitude, 1);
+                    street = addresses.get(0).getAddressLine(0);
+                    city = addresses.get(0).getLocality();
+                    state = addresses.get(0).getAdminArea();
+                    postal = addresses.get(0).getPostalCode();
+                    country = addresses.get(0).getCountryName();
+                    knownName = addresses.get(0).getFeatureName();
+
+                    Intent intent = new Intent(view.getContext(), CongressionalView.class);
+                    String msg = "address";
+                    intent.putExtra(msg, street.replace(" ", "%20").trim());
+                    startActivity(intent);
+
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
             }
 
             @Override
@@ -167,7 +217,34 @@ public class MainActivity extends AppCompatActivity {
         Random r = new Random();
         double randomLat = 32.5555 + (41.5555 - 32.5555) * r.nextDouble();
         double randomLng = -117.5555 + (-81.555 + 117.5555) * r.nextDouble();
-        LatLng random = new LatLng(randomLat, randomLng);
-        Log.i("LatLng:", random.latitude + " " + random.longitude);
+
+        Geocoder geocoder;
+        List<Address> addresses;
+        geocoder = new Geocoder(view.getContext(), Locale.getDefault());
+
+        String street = null;
+        String city = null;
+        String state = null;
+        String country = null;
+        String postal = null;
+        String knownName = null;
+
+        try {
+            addresses = geocoder.getFromLocation(randomLat, randomLng, 1);
+            street = addresses.get(0).getAddressLine(0);
+            city = addresses.get(0).getLocality();
+            state = addresses.get(0).getAdminArea();
+            postal = addresses.get(0).getPostalCode();
+            country = addresses.get(0).getCountryName();
+            knownName = addresses.get(0).getFeatureName();
+
+            Intent intent = new Intent(view.getContext(), CongressionalView.class);
+            String msg = "address";
+            intent.putExtra(msg, street.replace(" ", "%20").trim());
+            startActivity(intent);
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 }
