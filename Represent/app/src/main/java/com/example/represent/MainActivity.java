@@ -10,6 +10,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -28,16 +29,27 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
-import com.google.android.gms.common.api.Response;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.maps.model.LatLng;
+import com.squareup.picasso.Picasso;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
+
+import okhttp3.internal.concurrent.TaskRunner;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -45,22 +57,36 @@ public class MainActivity extends AppCompatActivity {
     TextView input;
     LocationManager locationManager;
     LocationListener locationListener;
+    ArrayList<CivicData> representatives;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+        /*if (no user){
+            representatives = new ArrayList<>();
+        } else {
+
+        }*/
+
         flag = (VideoView) findViewById(R.id.flag);
         flag.setVideoPath("android.resource://" + getPackageName() + "/" + R.raw.istockphotousflag);
-        flag.start();
 
         // Enables video looping.
-        flag.setOnCompletionListener ( new MediaPlayer.OnCompletionListener() {
 
+        runOnUiThread(new Runnable() {
             @Override
-            public void onCompletion(MediaPlayer mediaPlayer) {
+            public void run() {
                 flag.start();
+                flag.setOnCompletionListener ( new MediaPlayer.OnCompletionListener() {
+
+                    @Override
+                    public void onCompletion(MediaPlayer mediaPlayer) {
+                        flag.start();
+                    }
+                });
             }
         });
     }
@@ -92,37 +118,10 @@ public class MainActivity extends AppCompatActivity {
         }
         inputStr = inputStr.concat(zip.getText().toString().replace(" ", "%20").trim());
 
-        Intent intent = new Intent(view.getContext(), CongressionalView.class);
-        String msg = "address";
-        intent.putExtra(msg, inputStr);
-        startActivity(intent);
+        makeRequest(view, inputStr);
 
         // https://maps.googleapis.com/maps/api/geocode/json?address=
         // API Key: AIzaSyDy5rAPx5q5u01TReZcLgvH54Xo5OHgFRY
-    }
-
-    public LatLng getLocationFromAddress(Context context,String strAddress) {
-
-        Geocoder coder = new Geocoder(context);
-        List<Address> address;
-        LatLng p1 = null;
-
-        try {
-            // May throw an IOException
-            address = coder.getFromLocationName(strAddress, 5);
-            if (address == null) {
-                return null;
-            }
-
-            Address location = address.get(0);
-            p1 = new LatLng(location.getLatitude(), location.getLongitude() );
-
-        } catch (IOException ex) {
-
-            ex.printStackTrace();
-        }
-
-        return p1;
     }
 
     public void curLocationSearch(final View view) throws IOException {
@@ -153,10 +152,7 @@ public class MainActivity extends AppCompatActivity {
                     country = addresses.get(0).getCountryName();
                     knownName = addresses.get(0).getFeatureName();
 
-                    Intent intent = new Intent(view.getContext(), CongressionalView.class);
-                    String msg = "address";
-                    intent.putExtra(msg, street.replace(" ", "%20").trim());
-                    startActivity(intent);
+                    makeRequest(view, street.replace(" ", "%20").trim());
 
                 } catch (Exception ex) {
                     ex.printStackTrace();
@@ -238,13 +234,115 @@ public class MainActivity extends AppCompatActivity {
             country = addresses.get(0).getCountryName();
             knownName = addresses.get(0).getFeatureName();
 
-            Intent intent = new Intent(view.getContext(), CongressionalView.class);
-            String msg = "address";
-            intent.putExtra(msg, street.replace(" ", "%20").trim());
-            startActivity(intent);
+            makeRequest(view, street.replace(" ", "%20").trim());
 
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
+
+    public void makeRequest(View view, String input) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                String key = "AIzaSyDy5rAPx5q5u01TReZcLgvH54Xo5OHgFRY";
+                String repInfoRequest = "https://www.googleapis.com/civicinfo/v2/representatives?key=";
+                String addressTag = "&address=";
+                String msg = "address";
+                String address = input;
+                CivicData user = new CivicData(input);
+                representatives.add(0, user);
+
+                String url = repInfoRequest + key + addressTag + address;
+
+                RequestQueue requestQueue;
+                JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new com.android.volley.Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            JSONArray officials = response.getJSONArray("officials");
+                            JSONObject normInput = response.getJSONObject("normalizedInput");
+                            JSONArray offices = response.getJSONArray("offices");
+                            JSONObject districtObj = offices.getJSONObject(3);
+                            String district = districtObj.getString("divisionId");
+                            String state = normInput.getString("state");
+                            JSONObject s1Obj = officials.getJSONObject(2);
+                            JSONObject s2Obj = officials.getJSONObject(3);
+                            JSONObject repObj = officials.getJSONObject(4);
+                            String curPhoto = "";
+                            try {
+                                if (!s1Obj.getString("photoUrl").equals("")) {
+                                    curPhoto = s1Obj.getString("photoUrl").trim();
+                                }
+                            } catch (JSONException ex) {
+                                ex.printStackTrace();
+                            }
+                            HashMap<String, String> linkMap = new HashMap<>();
+                            String curName = s1Obj.getString("name");
+                            String curParty = s1Obj.getString("party");
+                            String curState = state;
+                            String curLink = "";
+                            try {
+                                curLink = (String) s1Obj.getJSONArray("urls").get(0);
+                            } catch (JSONException ex) {
+                                ex.printStackTrace();
+                            }
+                            CivicData curCivic = new CivicData(curPhoto, curName, curParty, curState, curLink);
+                            representatives.add(1, curCivic);
+                            try {
+                                curPhoto = s2Obj.getString("photoUrl").trim();
+                            } catch (JSONException ex) {
+                                ex.printStackTrace();
+                            }
+                            curName = s2Obj.getString("name");
+                            curParty = s2Obj.getString("party");
+                            curState = state;
+                            try {
+                                curLink = (String) s2Obj.getJSONArray("urls").get(0);
+                            } catch (JSONException ex) {
+                                ex.printStackTrace();
+                            }
+                            curCivic = new CivicData(curPhoto, curName, curParty, curState, curLink);
+                            representatives.add(2, curCivic);
+                            try {
+                                curPhoto = repObj.getString("photoUrl").trim();
+                            } catch (JSONException ex) {
+                                ex.printStackTrace();
+                            }
+                            curName = repObj.getString("name");
+                            curParty = repObj.getString("party");
+                            curState = "District " + district.substring(district.indexOf("cd:") + 3);
+                            try {
+                                curLink = (String) repObj.getJSONArray("urls").get(0);
+                            } catch (JSONException ex) {
+                                ex.printStackTrace();
+                            }
+                            curCivic = new CivicData(curPhoto, curName, curParty, curState, curLink);
+                            representatives.add(3, curCivic);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        error.printStackTrace();
+                    }
+                });
+                requestQueue = Volley.newRequestQueue(getApplicationContext());
+                requestQueue.add(request);
+            }
+        });
+
+        //Enable persistent storage between views.
+        SharedPreferences shared = this.getSharedPreferences("com.example.represent", Context.MODE_PRIVATE);
+
+        // Store representative info
+        shared.edit().putString("representatives", ObjectSerializer.serialize(representatives)).apply();
+
+        Intent intent = new Intent(view.getContext(), CongressionalView.class);
+        String msg = "address";
+        intent.putExtra(msg, input);
+        startActivity(intent);
     }
 }

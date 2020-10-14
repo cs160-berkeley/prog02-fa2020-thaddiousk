@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -14,6 +15,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toolbar;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -77,6 +79,17 @@ public class CongressionalView extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_congressional_view);
+
+        androidx.appcompat.widget.Toolbar toolbar = (androidx.appcompat.widget.Toolbar) findViewById(R.id.toolbar);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                requestQueue.stop();
+                finish();
+                Intent intent = new Intent(getContext(), MainActivity.class);
+                startActivity(intent);
+            }
+        });
 
         // Progress Dialog
         /*final ProgressDialog dialog = new ProgressDialog(this);
@@ -197,5 +210,9 @@ public class CongressionalView extends AppCompatActivity {
         });
         requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(request);
+    }
+
+    public void main(View view) {
+
     }
 }
