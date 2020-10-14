@@ -79,7 +79,7 @@
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
 
         <ImageView
-            android:id="@+id/senator1"
+            android:id="@+id/s1Photo"
             android:layout_width="70dp"
             android:layout_height="70dp"
             android:layout_marginLeft="32dp"
@@ -110,7 +110,7 @@
             android:textAlignment="center" />
 
         <Button
-            android:id="@+id/s1More"
+            android:id="@+id/s1Link"
             android:layout_width="70dp"
             android:layout_height="30dp"
             android:layout_marginLeft="33dp"
@@ -134,7 +134,7 @@
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
 
         <ImageView
-            android:id="@+id/senator2"
+            android:id="@+id/s2Photo"
             android:layout_width="70dp"
             android:layout_height="70dp"
             android:layout_marginLeft="32dp"
@@ -165,7 +165,7 @@
             android:textAlignment="center" />
 
         <Button
-            android:id="@+id/s2More"
+            android:id="@+id/s2Link"
             android:layout_width="70dp"
             android:layout_height="30dp"
             android:layout_marginLeft="33dp"
@@ -192,7 +192,7 @@
         app:layout_constraintVertical_bias="0.0">
 
         <ImageView
-            android:id="@+id/representative"
+            android:id="@+id/rPhoto"
             android:layout_width="70dp"
             android:layout_height="70dp"
             android:layout_marginLeft="32dp"
@@ -223,7 +223,7 @@
             android:textAlignment="center" />
 
         <Button
-            android:id="@+id/rMore"
+            android:id="@+id/rLink"
             android:layout_width="70dp"
             android:layout_height="30dp"
             android:layout_marginLeft="33dp"
