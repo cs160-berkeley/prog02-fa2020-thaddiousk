@@ -64,83 +64,48 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout2"
         android:layout_width="355dp"
-        android:layout_height="101dp"
+        android:layout_height="68dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/flag"
         app:layout_constraintVertical_bias="0.074">
 
-        <EditText
-            android:id="@+id/street"
-            android:layout_width="165dp"
-            android:layout_height="45dp"
-            android:background="@drawable/rounded_blue_border_white_bg"
-            android:fontFamily="@font/rationale"
-            android:hint="street"
-            android:inputType="textPostalAddress"
-            android:textAlignment="center"
-            android:textSize="18dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        <ScrollView
+            android:layout_width="285dp"
+            android:layout_height="68dp"
+            android:fillViewport="true">
 
-        <EditText
-            android:id="@+id/state"
-            android:layout_width="165dp"
-            android:layout_height="45dp"
-            android:background="@drawable/rounded_blue_border_white_bg"
-            android:fontFamily="@font/rationale"
-            android:hint="state"
-            android:inputType="textPostalAddress"
-            android:textAlignment="center"
-            android:textSize="18dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/street"
-            app:layout_constraintVertical_bias="1.0" />
+            <EditText
+                android:id="@+id/street"
+                android:layout_width="285dp"
+                android:layout_height="88dp"
+                android:background="@drawable/rounded_blue_border_white_bg"
+                android:fontFamily="@font/rationale"
+                android:hint="address/zip"
+                android:inputType="textPostalAddress"
+                android:textAlignment="center"
+                android:textSize="18dp" />
 
-        <EditText
-            android:id="@+id/zip"
-            android:layout_width="125dp"
-            android:layout_height="45dp"
-            android:layout_marginStart="168dp"
-            android:background="@drawable/rounded_blue_border_white_bg"
-            android:fontFamily="@font/rationale"
-            android:hint="zip code"
-            android:inputType="textPostalAddress"
-            android:textAlignment="center"
-            android:textSize="18dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/street"
-            app:layout_constraintVertical_bias="1.0" />
-
-        <EditText
-            android:id="@+id/city"
-            android:layout_width="125dp"
-            android:layout_height="45dp"
-            android:layout_marginStart="3dp"
-            android:background="@drawable/rounded_blue_border_white_bg"
-            android:fontFamily="@font/rationale"
-            android:hint="city"
-            android:inputType="textPostalAddress"
-            android:textAlignment="center"
-            android:textSize="18dp"
-            app:layout_constraintStart_toEndOf="@+id/street"
-            app:layout_constraintTop_toTopOf="parent" />
+        </ScrollView>
 
         <Button
             android:id="@+id/button"
-            android:layout_width="59dp"
-            android:layout_height="101dp"
+            android:layout_width="68dp"
+            android:layout_height="68dp"
             android:background="@drawable/rounded_blue_border_green_bg"
             android:onClick="addressSearch"
             android:text="||"
             android:textSize="28sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

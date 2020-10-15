@@ -43,6 +43,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -57,7 +58,14 @@ public class MainActivity extends AppCompatActivity {
     TextView input;
     LocationManager locationManager;
     LocationListener locationListener;
-    ArrayList<CivicData> representatives;
+    ArrayList<String> serialReps;
+    RequestQueue requestQueue;
+    boolean loaded = false;
+
+
+    public Context getContext() {
+        return this;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,25 +106,9 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(view.getContext(), "Please enter an address", Toast.LENGTH_LONG).show();
             return;
         }
-        String inputStr = street.getText().toString().replace(" ", "%20").trim().concat("%20");
-        TextView city = (TextView) findViewById(R.id.city);
-        if (city.getText().toString().equals("") || city.getText().toString().equals("")) {
-            Toast.makeText(view.getContext(), "Please enter a valid city", Toast.LENGTH_LONG).show();
-            return;
-        }
-        inputStr = inputStr.concat(city.getText().toString().replace(" ", "%20").trim().concat("%20"));
-        TextView state = (TextView) findViewById(R.id.state);
-        if (state.getText().toString().equals("") || state.getText().toString().equals("")) {
-            Toast.makeText(view.getContext(), "Please enter a valid state", Toast.LENGTH_LONG).show();
-            return;
-        }
-        inputStr = inputStr.concat(state.getText().toString().replace(" ", "%20").trim().concat("%20"));
-        TextView zip = (TextView) findViewById(R.id.zip);
-        if (zip.getText().toString().equals("") || zip.getText().toString().equals("")) {
-            Toast.makeText(view.getContext(), "Please enter a zip code", Toast.LENGTH_LONG).show();
-            return;
-        }
-        inputStr = inputStr.concat(zip.getText().toString().replace(" ", "%20").trim());
+        String inputStr = street.getText().toString()
+                .replace(" ", "%20")
+                .replace(",", "").trim().concat("%20");
 
         makeRequest(view, inputStr);
 
@@ -242,107 +234,267 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void makeRequest(View view, String input) {
-        runOnUiThread(new Runnable() {
+
+        // Progress Dialog
+        final ProgressDialog dialog = new ProgressDialog(this);
+        dialog.setMessage("Loading...");
+        dialog.setCancelable(true);
+        dialog.show();
+
+        // Make request
+        String key = "AIzaSyDy5rAPx5q5u01TReZcLgvH54Xo5OHgFRY";
+        String repInfoRequest = "https://www.googleapis.com/civicinfo/v2/representatives?key=";
+        String addressTag = "&address=";
+        String msg = "address";
+        String address = input;
+        HashMap<String, String> user = new HashMap<>();
+        user.put("user", input);
+        serialReps = new ArrayList<>();
+        try {
+            serialReps.add(0, ObjectSerializer.serialize(user));
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        ArrayList<String> test = serialReps;
+
+        String url = repInfoRequest + key + addressTag + address;
+
+        RequestQueue requestQueue;
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new com.android.volley.Response.Listener<JSONObject>() {
             @Override
-            public void run() {
-                String key = "AIzaSyDy5rAPx5q5u01TReZcLgvH54Xo5OHgFRY";
-                String repInfoRequest = "https://www.googleapis.com/civicinfo/v2/representatives?key=";
-                String addressTag = "&address=";
-                String msg = "address";
-                String address = input;
-                CivicData user = new CivicData(input);
-                representatives.add(0, user);
+            public void onResponse(JSONObject response) {
+                try {
+                    JSONArray officials = response.getJSONArray("officials");
+                    JSONObject normInput = response.getJSONObject("normalizedInput");
+                    JSONArray offices = response.getJSONArray("offices");
+                    JSONObject districtObj = offices.getJSONObject(3);
+                    String district = districtObj.getString("divisionId");
+                    String state = normInput.getString("state");
+                    JSONObject s1Obj = officials.getJSONObject(2);
+                    JSONObject s2Obj = officials.getJSONObject(3);
+                    JSONObject repObj = officials.getJSONObject(4);
+                    String curPhoto = "";
 
-                String url = repInfoRequest + key + addressTag + address;
-
-                RequestQueue requestQueue;
-                JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new com.android.volley.Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            JSONArray officials = response.getJSONArray("officials");
-                            JSONObject normInput = response.getJSONObject("normalizedInput");
-                            JSONArray offices = response.getJSONArray("offices");
-                            JSONObject districtObj = offices.getJSONObject(3);
-                            String district = districtObj.getString("divisionId");
-                            String state = normInput.getString("state");
-                            JSONObject s1Obj = officials.getJSONObject(2);
-                            JSONObject s2Obj = officials.getJSONObject(3);
-                            JSONObject repObj = officials.getJSONObject(4);
-                            String curPhoto = "";
-                            try {
-                                if (!s1Obj.getString("photoUrl").equals("")) {
-                                    curPhoto = s1Obj.getString("photoUrl").trim();
-                                }
-                            } catch (JSONException ex) {
-                                ex.printStackTrace();
-                            }
-                            HashMap<String, String> linkMap = new HashMap<>();
-                            String curName = s1Obj.getString("name");
-                            String curParty = s1Obj.getString("party");
-                            String curState = state;
-                            String curLink = "";
-                            try {
-                                curLink = (String) s1Obj.getJSONArray("urls").get(0);
-                            } catch (JSONException ex) {
-                                ex.printStackTrace();
-                            }
-                            CivicData curCivic = new CivicData(curPhoto, curName, curParty, curState, curLink);
-                            representatives.add(1, curCivic);
-                            try {
-                                curPhoto = s2Obj.getString("photoUrl").trim();
-                            } catch (JSONException ex) {
-                                ex.printStackTrace();
-                            }
-                            curName = s2Obj.getString("name");
-                            curParty = s2Obj.getString("party");
-                            curState = state;
-                            try {
-                                curLink = (String) s2Obj.getJSONArray("urls").get(0);
-                            } catch (JSONException ex) {
-                                ex.printStackTrace();
-                            }
-                            curCivic = new CivicData(curPhoto, curName, curParty, curState, curLink);
-                            representatives.add(2, curCivic);
-                            try {
-                                curPhoto = repObj.getString("photoUrl").trim();
-                            } catch (JSONException ex) {
-                                ex.printStackTrace();
-                            }
-                            curName = repObj.getString("name");
-                            curParty = repObj.getString("party");
-                            curState = "District " + district.substring(district.indexOf("cd:") + 3);
-                            try {
-                                curLink = (String) repObj.getJSONArray("urls").get(0);
-                            } catch (JSONException ex) {
-                                ex.printStackTrace();
-                            }
-                            curCivic = new CivicData(curPhoto, curName, curParty, curState, curLink);
-                            representatives.add(3, curCivic);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                    // Senator 1
+                    try {
+                        if (!s1Obj.getString("photoUrl").equals("")) {
+                            curPhoto = s1Obj.getString("photoUrl").trim();
                         }
+                    } catch (JSONException ex) {
+                        ex.printStackTrace();
                     }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        error.printStackTrace();
+                    String curName = s1Obj.getString("name");
+                    String curParty = s1Obj.getString("party");
+                    String curState = state;
+                    String curLink = "";
+                    String phone = "";
+                    String facebook = "";
+                    String twitter = "";
+                    String youtube = "";
+                    JSONArray channels = s1Obj.getJSONArray("channels");
+                    try {
+                        curLink = (String) s1Obj.getJSONArray("urls").get(0);
+                    } catch (JSONException ex) {
+                        ex.printStackTrace();
                     }
-                });
-                requestQueue = Volley.newRequestQueue(getApplicationContext());
-                requestQueue.add(request);
+                    try {
+                        phone = (String) s1Obj.getJSONArray("phones").get(0);
+                    } catch (JSONException ex) {
+                        ex.printStackTrace();
+                    }
+                    try {
+                        JSONObject facebookObj = channels.getJSONObject(0);
+                        facebook = (String) facebookObj.get("id");
+                    } catch (JSONException ex) {
+                        ex.printStackTrace();
+                    }
+                    try {
+                        JSONObject twitterObj = channels.getJSONObject(1);
+                        twitter = (String) twitterObj.get("id");
+                    } catch (JSONException ex) {
+                        ex.printStackTrace();
+                    }
+                    try {
+                        JSONObject youtubeObj = channels.getJSONObject(2);
+                        youtube = (String) youtubeObj.get("id");
+                    } catch (JSONException ex) {
+                        ex.printStackTrace();
+                    }
+                    HashMap<String, String> curRep = new HashMap<String, String>();
+                    curRep.put("photo", curPhoto);
+                    curRep.put("name", curName);
+                    curRep.put("party", curParty);
+                    curRep.put("location", curState);
+                    curRep.put("weblink", curLink);
+                    curRep.put("phone", phone);
+                    curRep.put("facebook", facebook);
+                    curRep.put("twitter", twitter);
+                    curRep.put("youtube", youtube);
+                    try {
+                        serialReps.add(1, ObjectSerializer.serialize(curRep));
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+
+                    // Senator 2
+                    channels = s2Obj.getJSONArray("channels");
+                    try {
+                        if (!s2Obj.getString("photoUrl").equals("")) {
+                            curPhoto = s2Obj.getString("photoUrl").trim();
+                        }
+                    } catch (JSONException ex) {
+                        ex.printStackTrace();
+                        curPhoto = "";
+                    }
+                    curName = s2Obj.getString("name");
+                    curParty = s2Obj.getString("party");
+                    curState = state;
+                    try {
+                        curLink = (String) s2Obj.getJSONArray("urls").get(0);
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                        curLink = "";
+                    }
+                    try {
+                        phone = (String) s2Obj.getJSONArray("phones").get(0);
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                        phone = "";
+                    }
+                    try {
+                        JSONObject facebookObj = channels.getJSONObject(0);
+                        facebook = (String) facebookObj.get("id");
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                        facebook = "";
+                    }
+                    try {
+                        JSONObject twitterObj = channels.getJSONObject(1);
+                        twitter = (String) twitterObj.get("id");
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                        twitter = "";
+                    }
+                    try {
+                        JSONObject youtubeObj = channels.getJSONObject(2);
+                        youtube = (String) youtubeObj.get("id");
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                        youtube = "";
+                    }
+                    curRep = new HashMap<String, String>();
+                    curRep.put("photo", curPhoto);
+                    curRep.put("name", curName);
+                    curRep.put("party", curParty);
+                    curRep.put("location", curState);
+                    curRep.put("weblink", curLink);
+                    curRep.put("phone", phone);
+                    curRep.put("facebook", facebook);
+                    curRep.put("twitter", twitter);
+                    curRep.put("youtube", youtube);
+                    try {
+                        serialReps.add(2, ObjectSerializer.serialize(curRep));
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+
+                    // Representative
+                    channels = repObj.getJSONArray("channels");
+                    try {
+                        if (!repObj.getString("photoUrl").equals("")) {
+                            curPhoto = repObj.getString("photoUrl").trim();
+                        }
+                    } catch (JSONException ex) {
+                        ex.printStackTrace();
+                        curPhoto = "";
+                    }
+                    curName = repObj.getString("name");
+                    curParty = repObj.getString("party");
+                    String districtTest = district.substring(district.indexOf("cd:") + 3);
+                    if (districtTest.length() < 1 || districtTest.length() > 3) {
+                        curState = "District-at-Large";
+                    } else {
+                        curState = "District " + districtTest;
+                    }
+                    try {
+                        curLink = (String) repObj.getJSONArray("urls").get(0);
+                    } catch (JSONException ex) {
+                        ex.printStackTrace();
+                    }
+                    try {
+                        phone = (String) repObj.getJSONArray("phones").get(0);
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                        phone = "";
+                    }
+                    try {
+                        JSONObject facebookObj = channels.getJSONObject(0);
+                        facebook = (String) facebookObj.get("id");
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                        facebook = "";
+                    }
+                    try {
+                        JSONObject twitterObj = channels.getJSONObject(1);
+                        twitter = (String) twitterObj.get("id");
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                        twitter = "";
+                    }
+                    try {
+                        JSONObject youtubeObj = channels.getJSONObject(2);
+                        youtube = (String) youtubeObj.get("id");
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                        youtube = "";
+                    }
+                    curRep = new HashMap<String, String>();
+                    curRep.put("photo", curPhoto);
+                    curRep.put("name", curName);
+                    curRep.put("party", curParty);
+                    curRep.put("location", curState);
+                    curRep.put("weblink", curLink);
+                    curRep.put("phone", phone);
+                    curRep.put("facebook", facebook);
+                    curRep.put("twitter", twitter);
+                    curRep.put("youtube", youtube);
+                    try {
+                        serialReps.add(3, ObjectSerializer.serialize(curRep));
+                        SharedPreferences shared = getApplicationContext().getSharedPreferences("com.example.represent", Context.MODE_PRIVATE);
+
+                        // Store representative info
+                        try {
+                            shared.edit().putString("representatives", ObjectSerializer.serialize((Serializable) serialReps)).apply();
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                        }
+                        Intent intent = new Intent(getContext(), CongressionalView.class);
+                        intent.putExtra("address", "address");
+                        dialog.dismiss();
+                        finish();
+                        startActivity(intent);
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                    loaded = true;
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+                Toast.makeText(getContext(), "Please enter a complete address or zip."
+                        , Toast.LENGTH_LONG).show();
             }
         });
+        requestQueue = Volley.newRequestQueue(getContext());
+        requestQueue.add(request);
 
         //Enable persistent storage between views.
-        SharedPreferences shared = this.getSharedPreferences("com.example.represent", Context.MODE_PRIVATE);
-
-        // Store representative info
-        shared.edit().putString("representatives", ObjectSerializer.serialize(representatives)).apply();
-
-        Intent intent = new Intent(view.getContext(), CongressionalView.class);
-        String msg = "address";
-        intent.putExtra(msg, input);
-        startActivity(intent);
+        if (loaded) {
+            flag.stopPlayback();
+        }
     }
 }

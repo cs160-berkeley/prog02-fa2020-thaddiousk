@@ -12,8 +12,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:usesCleartextTraffic="true" >
-        <activity android:name=".CongressionalView" android:parentActivityName=".MainActivity">
+        android:usesCleartextTraffic="true">
+        <activity android:name=".DetailedView"></activity>
+        <activity
+            android:name=".CongressionalView"
+            android:parentActivityName=".MainActivity">
+
             <!-- The meta-data tag is required if you support API level 15 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
