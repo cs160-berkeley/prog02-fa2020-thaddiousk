@@ -1,6 +1,7 @@
 package com.example.represent;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -8,11 +9,16 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -46,15 +52,19 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Timer;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class CongressionalView extends AppCompatActivity {
 
+    ExecutorService executorService = Executors.newFixedThreadPool(4);
     String key = "AIzaSyDy5rAPx5q5u01TReZcLgvH54Xo5OHgFRY";
     String repInfoRequest = "https://www.googleapis.com/civicinfo/v2/representatives?key=";
     String addressTag = "&address=";
+    String votingInfo = "";
     ArrayList<String> repSerialized;
     ArrayList<HashMap<String, String>> representativesArr;
-
+    Animation animation = new AlphaAnimation(1, 0); //to change visibility from visible to invisible
 
     public Context getContext() {
         return this;
@@ -66,6 +76,7 @@ public class CongressionalView extends AppCompatActivity {
         setContentView(R.layout.activity_congressional_view);
 
         SharedPreferences shared = this.getSharedPreferences("com.example.represent", Context.MODE_PRIVATE);
+        votingInfo = shared.getString("votingInfo", "yes");
 
         representativesArr = new ArrayList<>();
         try {
@@ -83,6 +94,21 @@ public class CongressionalView extends AppCompatActivity {
             this.representativesArr.add(3, rep);
         } catch (IOException ex) {
             ex.printStackTrace();
+        }
+
+        ImageView infoAlert = findViewById(R.id.infoAlert);
+
+        if (votingInfo.equals("yes")) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    animation.setDuration(1500); // 1.5 second duration for each animation cycle
+                    animation.setInterpolator(new LinearInterpolator());
+                    animation.setRepeatCount(Animation.INFINITE); //repeating indefinitely
+                    animation.setRepeatMode(Animation.REVERSE); //animation will start from end point once ended.
+                    infoAlert.startAnimation(animation); //to start animation
+                }
+            });
         }
 
         try {
@@ -199,5 +225,62 @@ public class CongressionalView extends AppCompatActivity {
         intent.putExtra("address", "address");
         finish();
         startActivity(intent);
+    }
+
+    public void votingInfo(View view) {
+        animation.cancel();
+
+        // Bring info view to front.
+        ImageView infoAlert = findViewById(R.id.infoAlert);
+        infoAlert.animate().alpha(0f).setDuration(1000).start();
+        ConstraintLayout votingView = findViewById(R.id.votingView);
+        votingView.animate().alpha(1f).setDuration(1000).start();
+        votingView.bringToFront();
+        Button yes = findViewById(R.id.yes);
+        yes.setClickable(true);
+        Button no = findViewById(R.id.no);
+        no.setClickable(true);
+
+        // Prevent clicking on buried images/buttons.
+        ImageView s1Photo = findViewById(R.id.s1Photo);
+        s1Photo.setClickable(false);
+        ImageView s2Photo = findViewById(R.id.s2Photo);
+        s2Photo.setClickable(false);
+        Button s1Link = findViewById(R.id.s1Link);
+        s1Link.setClickable(false);
+        Button s2Link = findViewById(R.id.s2Link);
+        s2Link.setClickable(false);
+    }
+
+    public void moreInfo(View view) {
+        Intent intent = new Intent(getContext(), VotingInfo.class);
+        intent.putExtra("returnTo", "CongressionalView");
+        finish();
+        startActivity(intent);
+    }
+
+    public void noInfo(View view) {
+        // Take view to back
+        ConstraintLayout votingView = findViewById(R.id.votingView);
+        votingView.animate().alpha(0f).setDuration(1000).start();
+        Button yes = findViewById(R.id.yes);
+        yes.setClickable(false);
+        Button no = findViewById(R.id.no);
+        no.setClickable(false);
+        votingView.removeView(votingView);
+
+        // Allow clicking on original links.
+        // Prevent clicking on buried images/buttons.
+        ImageView s1Photo = findViewById(R.id.s1Photo);
+        s1Photo.setClickable(true);
+        ImageView s2Photo = findViewById(R.id.s2Photo);
+        s2Photo.setClickable(true);
+        Button s1Link = findViewById(R.id.s1Link);
+        s1Link.setClickable(true);
+        Button s2Link = findViewById(R.id.s2Link);
+        s2Link.setClickable(true);
+        SharedPreferences shared = this.getSharedPreferences("com.example.represent", Context.MODE_PRIVATE);
+        shared.edit().putString("votingInfo", "no");
+        votingInfo = "no";
     }
 }

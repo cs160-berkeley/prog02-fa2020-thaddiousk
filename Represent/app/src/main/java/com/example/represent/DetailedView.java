@@ -5,26 +5,34 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.common.server.response.FastParser;
 import com.squareup.picasso.Picasso;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class DetailedView extends AppCompatActivity {
 
     HashMap<String, String> curRep;
+    ExecutorService executorService = Executors.newFixedThreadPool(4);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detailed_view);
+
+
 
         SharedPreferences shared = this.getSharedPreferences("com.example.represent", Context.MODE_PRIVATE);
         ArrayList<HashMap<String, String>> representativesArr = new ArrayList<>();
@@ -66,6 +74,59 @@ public class DetailedView extends AppCompatActivity {
         Intent intent = new Intent(this, CongressionalView.class);
         intent.putExtra("address", "address");
         finish();
+        startActivity(intent);
+    }
+
+    public void loadSite(View view) {
+        String url = curRep.get("weblink");
+        Uri webPage = Uri.parse(url);
+        Intent intent = new Intent(Intent.ACTION_VIEW, webPage);
+        startActivity(intent);
+    }
+
+    public void loadCall(View view) {
+        String phoneNumber = curRep.get("phone");
+        Intent intent = new Intent(Intent.ACTION_DIAL);
+        intent.setData(Uri.parse("tel:" + phoneNumber));
+        startActivity(intent);
+    }
+
+    public void loadFacebook(View view) {
+        String url = curRep.get("facebook");
+        Uri webPage;
+        if (!url.equals("")) {
+            webPage = Uri.parse("https://www.facebook.com/" + url);
+        } else {
+            Toast.makeText(this, "This person does not have a Facebook page.", Toast.LENGTH_LONG).show();
+            return;
+        }
+        Intent intent = new Intent(Intent.ACTION_VIEW, webPage);
+        startActivity(intent);
+    }
+
+    public void loadTwitter(View view) {
+        String url = curRep.get("twitter");
+        Uri webPage;
+        if (!url.equals("")) {
+            webPage = Uri.parse("https://twitter.com/" + url);
+        } else {
+            Toast.makeText(this, "This person does not have a Twitter page.", Toast.LENGTH_LONG).show();
+            return;
+        }
+        Intent intent = new Intent(Intent.ACTION_VIEW, webPage);
+        startActivity(intent);
+    }
+
+    public void loadYoutube(View view) {
+        String url = curRep.get("youtube");
+        Uri webPage;
+        if (!url.equals("")) {
+            webPage = Uri.parse("https://youtube.com/" + url);
+        } else {
+            Toast.makeText(this, "This person does not have a Youtube page.", Toast.LENGTH_LONG).show();
+            return;
+        }
+        Intent intent = new Intent(Intent.ACTION_VIEW, webPage);
         startActivity(intent);
     }
 }

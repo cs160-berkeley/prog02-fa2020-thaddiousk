@@ -49,11 +49,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import okhttp3.internal.concurrent.TaskRunner;
 
 public class MainActivity extends AppCompatActivity {
 
+    ExecutorService executorService = Executors.newFixedThreadPool(4);
     VideoView flag;
     TextView input;
     LocationManager locationManager;
@@ -61,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<String> serialReps;
     RequestQueue requestQueue;
     boolean loaded = false;
-
+    ProgressDialog dialog;
 
     public Context getContext() {
         return this;
@@ -110,6 +114,11 @@ public class MainActivity extends AppCompatActivity {
                 .replace(" ", "%20")
                 .replace(",", "").trim().concat("%20");
 
+        // Progress Dialog
+        dialog = new ProgressDialog(this);
+        dialog.setMessage("Loading...");
+        dialog.setCancelable(true);
+        dialog.show();
         makeRequest(view, inputStr);
 
         // https://maps.googleapis.com/maps/api/geocode/json?address=
@@ -117,75 +126,85 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void curLocationSearch(final View view) throws IOException {
-        locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-
-        locationListener = new LocationListener() {
+        executorService.execute(new Runnable() {
             @Override
-            public void onLocationChanged(@NonNull Location location) {
-                LatLng curLoc = new LatLng(location.getLatitude(), location.getLongitude());
+            public void run() {
+                locationManager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
+                locationListener = new LocationListener() {
+                    @Override
+                    public void onLocationChanged(@NonNull Location location) {
+                        LatLng curLoc = new LatLng(location.getLatitude(), location.getLongitude());
 
-                Geocoder geocoder;
-                List<Address> addresses;
-                geocoder = new Geocoder(view.getContext(), Locale.getDefault());
+                        Geocoder geocoder;
+                        List<Address> addresses;
+                        geocoder = new Geocoder(view.getContext(), Locale.getDefault());
 
-                String street = null;
-                String city = null;
-                String state = null;
-                String country = null;
-                String postal = null;
-                String knownName = null;
+                        String street = null;
+                        String city = null;
+                        String state = null;
+                        String country = null;
+                        String postal = null;
+                        String knownName = null;
 
-                try {
-                    addresses = geocoder.getFromLocation(curLoc.latitude, curLoc.longitude, 1);
-                    street = addresses.get(0).getAddressLine(0);
-                    city = addresses.get(0).getLocality();
-                    state = addresses.get(0).getAdminArea();
-                    postal = addresses.get(0).getPostalCode();
-                    country = addresses.get(0).getCountryName();
-                    knownName = addresses.get(0).getFeatureName();
+                        try {
+                            addresses = geocoder.getFromLocation(curLoc.latitude, curLoc.longitude, 1);
+                            street = addresses.get(0).getAddressLine(0);
+                            city = addresses.get(0).getLocality();
+                            state = addresses.get(0).getAdminArea();
+                            postal = addresses.get(0).getPostalCode();
+                            country = addresses.get(0).getCountryName();
+                            knownName = addresses.get(0).getFeatureName();
 
-                    makeRequest(view, street.replace(" ", "%20").trim());
+                            // Progress Dialog
+                            dialog = new ProgressDialog(MainActivity.this);
+                            dialog.setMessage("Loading...");
+                            dialog.setCancelable(true);
+                            dialog.show();
 
-                } catch (Exception ex) {
-                    ex.printStackTrace();
+                            makeRequest(view, street.replace(" ", "%20").trim());
+
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onStatusChanged(String s, int i, Bundle bundle) {
+
+                    }
+
+                    @Override
+                    public void onProviderEnabled(String s) {
+
+                    }
+
+                    @Override
+                    public void onProviderDisabled(String s) {
+
+                    }
+                };
+
+                // If device is running SDK < 23
+
+                if (Build.VERSION.SDK_INT < 23) {
+                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, Integer.MAX_VALUE, 0, locationListener);
+                } else {
+
+                    if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)
+                            != PackageManager.PERMISSION_GRANTED) {
+
+                        // Ask for permission
+                        ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+
+                    } else {
+
+                        // We have permission
+                        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, Integer.MAX_VALUE, 0, locationListener);
+
+                    }
                 }
             }
-
-            @Override
-            public void onStatusChanged(String s, int i, Bundle bundle) {
-
-            }
-
-            @Override
-            public void onProviderEnabled(String s) {
-
-            }
-
-            @Override
-            public void onProviderDisabled(String s) {
-
-            }
-        };
-
-        // If device is running SDK < 23
-
-        if (Build.VERSION.SDK_INT < 23) {
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, Integer.MAX_VALUE, 0, locationListener);
-        } else {
-
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                    != PackageManager.PERMISSION_GRANTED) {
-
-                // Ask for permission
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-
-            } else {
-
-                // We have permission
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, Integer.MAX_VALUE, 0, locationListener);
-
-            }
-        }
+        });
     }
 
     @Override
@@ -226,6 +245,12 @@ public class MainActivity extends AppCompatActivity {
             country = addresses.get(0).getCountryName();
             knownName = addresses.get(0).getFeatureName();
 
+            // Progress Dialog
+            dialog = new ProgressDialog(this);
+            dialog.setMessage("Loading...");
+            dialog.setCancelable(true);
+            dialog.show();
+
             makeRequest(view, street.replace(" ", "%20").trim());
 
         } catch (Exception ex) {
@@ -234,12 +259,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void makeRequest(View view, String input) {
-
-        // Progress Dialog
-        final ProgressDialog dialog = new ProgressDialog(this);
-        dialog.setMessage("Loading...");
-        dialog.setCancelable(true);
-        dialog.show();
 
         // Make request
         String key = "AIzaSyDy5rAPx5q5u01TReZcLgvH54Xo5OHgFRY";
@@ -468,6 +487,7 @@ public class MainActivity extends AppCompatActivity {
                         } catch (IOException ex) {
                             ex.printStackTrace();
                         }
+                        shared.edit().putString("votingInfo", "yes");
                         Intent intent = new Intent(getContext(), CongressionalView.class);
                         intent.putExtra("address", "address");
                         dialog.dismiss();

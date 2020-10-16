@@ -3,9 +3,11 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/infoWindow"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:clickable="false">
+    android:clickable="false"
+    android:onClick="votingInfo">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout3"
@@ -43,12 +45,14 @@
                 android:id="@+id/toolbar"
                 android:layout_width="65dp"
                 android:layout_height="63dp"
-                android:layout_marginTop="14dp"
                 android:layout_marginLeft="14dp"
+                android:layout_marginTop="16dp"
                 android:background="@drawable/rounded_blue_border_green_bg"
                 android:clickable="true"
                 android:minHeight="?attr/actionBarSize"
                 android:onClick="back"
+                app:layout_constraintEnd_toStartOf="@+id/textView2"
+                app:layout_constraintHorizontal_bias="0.10"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -63,6 +67,19 @@
                 app:layout_constraintStart_toStartOf="@+id/toolbar"
                 app:layout_constraintTop_toTopOf="@+id/toolbar"
                 app:srcCompat="@drawable/abc_vector_test" />
+
+            <ImageView
+                android:id="@+id/infoAlert"
+                android:layout_width="65dp"
+                android:layout_height="63dp"
+                android:layout_marginTop="18dp"
+                android:layout_marginEnd="16dp"
+                android:alpha="1"
+                android:clickable="true"
+                android:onClick="votingInfo"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@android:drawable/ic_dialog_alert" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -269,6 +286,71 @@
                 android:textSize="10sp" />
 
         </LinearLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/votingView"
+            android:layout_width="321dp"
+            android:layout_height="230dp"
+            android:layout_marginTop="16dp"
+            android:alpha="0"
+            android:background="@drawable/rounded_blue_border_white_bg"
+            android:textAlignment="center"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:fontFamily="@font/rationale"
+                android:text="Would you like more voting info?"
+                android:textAlignment="center"
+                android:textSize="36sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.589"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Button
+                android:id="@+id/no"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="35dp"
+                android:background="@drawable/rounded_blue_border_red_bg"
+                android:clickable="false"
+                android:fontFamily="@font/condiment"
+                android:onClick="noInfo"
+                android:paddingBottom="0dp"
+                android:text="No"
+                android:textColor="#F6F7EB"
+                android:textSize="28sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.2"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView4" />
+
+            <Button
+                android:id="@+id/yes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="35dp"
+                android:background="@drawable/rounded_blue_border_green_bg"
+                android:clickable="false"
+                android:fontFamily="@font/condiment"
+                android:onClick="moreInfo"
+                android:paddingBottom="0dp"
+                android:text="yes"
+                android:textColor="#F6F7EB"
+                android:textSize="28sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.8"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView4" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
