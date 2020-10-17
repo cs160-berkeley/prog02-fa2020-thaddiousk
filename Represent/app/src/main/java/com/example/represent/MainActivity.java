@@ -66,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
     RequestQueue requestQueue;
     boolean loaded = false;
     ProgressDialog dialog;
+    String key = "AIzaSyDy5rAPx5q5u01TReZcLgvH54Xo5OHgFRY";
 
     public Context getContext() {
         return this;
@@ -88,11 +89,11 @@ public class MainActivity extends AppCompatActivity {
 
         // Enables video looping.
 
-        runOnUiThread(new Runnable() {
+        executorService.execute(new Runnable() {
             @Override
             public void run() {
                 flag.start();
-                flag.setOnCompletionListener ( new MediaPlayer.OnCompletionListener() {
+                flag.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
 
                     @Override
                     public void onCompletion(MediaPlayer mediaPlayer) {
@@ -103,7 +104,44 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    public void saveLocation(String address) {
+        String url = "https://maps.googleapis.com/maps/api/geocode/json?address="
+                + address + "&key=" + key;
+        RequestQueue requestQueue;
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new com.android.volley.Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    JSONArray officials = response.getJSONArray("results");
+                    JSONObject officialsObj = officials.getJSONObject(0);
+                    JSONObject geometry = officialsObj.getJSONObject("geometry");
+                    JSONObject location = geometry.getJSONObject("location");
+                    SharedPreferences shared = getApplicationContext().getSharedPreferences("com.example.represent", Context.MODE_PRIVATE);
+
+                    // Store user address.
+                    shared.edit().putFloat("userLat", (float) location.getDouble("lat")).apply();
+                    shared.edit().putFloat("userLng", (float) location.getDouble("lng")).apply();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+            }
+        });
+        requestQueue = Volley.newRequestQueue(getContext());
+        requestQueue.add(request);
+    }
+
     public void addressSearch(View view) throws IOException {
+        // Progress Dialog
+        dialog = new ProgressDialog(this);
+        dialog.setMessage("Loading...");
+        dialog.setCancelable(true);
+        dialog.show();
+
         TextView street = (TextView) findViewById(R.id.street);
 
         if (street.getText().toString().equals("") || street.getText().toString().equals("")) {
@@ -114,21 +152,24 @@ public class MainActivity extends AppCompatActivity {
                 .replace(" ", "%20")
                 .replace(",", "").trim().concat("%20");
 
-        // Progress Dialog
-        dialog = new ProgressDialog(this);
-        dialog.setMessage("Loading...");
-        dialog.setCancelable(true);
-        dialog.show();
-        makeRequest(view, inputStr);
+        saveLocation(street.getText().toString().replace(" ", "+").trim());
+        makeRequest(inputStr);
 
         // https://maps.googleapis.com/maps/api/geocode/json?address=
         // API Key: AIzaSyDy5rAPx5q5u01TReZcLgvH54Xo5OHgFRY
     }
 
     public void curLocationSearch(final View view) throws IOException {
-        executorService.execute(new Runnable() {
+        runOnUiThread(new Runnable() {
             @Override
             public void run() {
+
+                // Progress Dialog
+                dialog = new ProgressDialog(MainActivity.this);
+                dialog.setMessage("Loading...");
+                dialog.setCancelable(true);
+                dialog.show();
+
                 locationManager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
                 locationListener = new LocationListener() {
                     @Override
@@ -140,28 +181,14 @@ public class MainActivity extends AppCompatActivity {
                         geocoder = new Geocoder(view.getContext(), Locale.getDefault());
 
                         String street = null;
-                        String city = null;
-                        String state = null;
-                        String country = null;
-                        String postal = null;
-                        String knownName = null;
 
                         try {
+
                             addresses = geocoder.getFromLocation(curLoc.latitude, curLoc.longitude, 1);
                             street = addresses.get(0).getAddressLine(0);
-                            city = addresses.get(0).getLocality();
-                            state = addresses.get(0).getAdminArea();
-                            postal = addresses.get(0).getPostalCode();
-                            country = addresses.get(0).getCountryName();
-                            knownName = addresses.get(0).getFeatureName();
 
-                            // Progress Dialog
-                            dialog = new ProgressDialog(MainActivity.this);
-                            dialog.setMessage("Loading...");
-                            dialog.setCancelable(true);
-                            dialog.show();
-
-                            makeRequest(view, street.replace(" ", "%20").trim());
+                            saveLocation(street.replace(" ", "+").trim());
+                            makeRequest(street.replace(" ", "%20").trim());
 
                         } catch (Exception ex) {
                             ex.printStackTrace();
@@ -221,6 +248,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void randomSearch(View view)  {
+
+        // Progress Dialog
+        dialog = new ProgressDialog(this);
+        dialog.setMessage("Loading...");
+        dialog.setCancelable(true);
+        dialog.show();
+
         Random r = new Random();
         double randomLat = 32.5555 + (41.5555 - 32.5555) * r.nextDouble();
         double randomLng = -117.5555 + (-81.555 + 117.5555) * r.nextDouble();
@@ -230,38 +264,23 @@ public class MainActivity extends AppCompatActivity {
         geocoder = new Geocoder(view.getContext(), Locale.getDefault());
 
         String street = null;
-        String city = null;
-        String state = null;
-        String country = null;
-        String postal = null;
-        String knownName = null;
 
         try {
             addresses = geocoder.getFromLocation(randomLat, randomLng, 1);
             street = addresses.get(0).getAddressLine(0);
-            city = addresses.get(0).getLocality();
-            state = addresses.get(0).getAdminArea();
-            postal = addresses.get(0).getPostalCode();
-            country = addresses.get(0).getCountryName();
-            knownName = addresses.get(0).getFeatureName();
 
-            // Progress Dialog
-            dialog = new ProgressDialog(this);
-            dialog.setMessage("Loading...");
-            dialog.setCancelable(true);
-            dialog.show();
+            saveLocation(street.replace(" ", "+").trim());
 
-            makeRequest(view, street.replace(" ", "%20").trim());
+            makeRequest(street.replace(" ", "%20").trim());
 
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
 
-    public void makeRequest(View view, String input) {
+    public void makeRequest(String input) {
 
         // Make request
-        String key = "AIzaSyDy5rAPx5q5u01TReZcLgvH54Xo5OHgFRY";
         String repInfoRequest = "https://www.googleapis.com/civicinfo/v2/representatives?key=";
         String addressTag = "&address=";
         String msg = "address";
@@ -278,7 +297,7 @@ public class MainActivity extends AppCompatActivity {
 
         String url = repInfoRequest + key + addressTag + address;
 
-        RequestQueue requestQueue;
+        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new com.android.volley.Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -490,7 +509,6 @@ public class MainActivity extends AppCompatActivity {
                         shared.edit().putString("votingInfo", "yes");
                         Intent intent = new Intent(getContext(), CongressionalView.class);
                         intent.putExtra("address", "address");
-                        dialog.dismiss();
                         finish();
                         startActivity(intent);
                     } catch (IOException ex) {
@@ -509,12 +527,13 @@ public class MainActivity extends AppCompatActivity {
                         , Toast.LENGTH_LONG).show();
             }
         });
-        requestQueue = Volley.newRequestQueue(getContext());
         requestQueue.add(request);
 
-        //Enable persistent storage between views.
+        // Stop requests.
         if (loaded) {
+            dialog.dismiss();
             flag.stopPlayback();
+            requestQueue.stop();
         }
     }
 }

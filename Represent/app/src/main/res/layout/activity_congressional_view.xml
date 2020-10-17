@@ -7,12 +7,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clickable="false"
-    android:onClick="votingInfo">
+    android:scrollIndicators="right"
+    android:scrollbarDefaultDelayBeforeFade="500"
+    android:scrollbarFadeDuration="1000">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout3"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
         android:background="#F6F7EB"
         tools:context=".CongressionalView">
 
@@ -68,18 +70,30 @@
                 app:layout_constraintTop_toTopOf="@+id/toolbar"
                 app:srcCompat="@drawable/abc_vector_test" />
 
-            <ImageView
+            <Button
                 android:id="@+id/infoAlert"
                 android:layout_width="65dp"
                 android:layout_height="63dp"
                 android:layout_marginTop="18dp"
                 android:layout_marginEnd="16dp"
                 android:alpha="1"
+                android:background="@drawable/rounded_blue_border_green_bg"
                 android:clickable="true"
                 android:onClick="votingInfo"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@android:drawable/ic_dialog_alert" />
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/bulb"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
+                android:layout_marginBottom="3dp"
+                android:elevation="2dp"
+                app:layout_constraintBottom_toBottomOf="@+id/infoAlert"
+                app:layout_constraintEnd_toEndOf="@+id/infoAlert"
+                app:layout_constraintStart_toStartOf="@+id/infoAlert"
+                app:layout_constraintTop_toTopOf="@+id/infoAlert"
+                app:srcCompat="@drawable/bulbexclamation" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
