@@ -121,7 +121,11 @@ public class DetailedView extends AppCompatActivity {
         String url = curRep.get("youtube");
         Uri webPage;
         if (!url.equals("")) {
-            webPage = Uri.parse("https://youtube.com/" + url);
+            if (url.length() == 24) {
+                webPage = Uri.parse("https://youtube.com/channel/" + url);
+            } else {
+                webPage = Uri.parse("https://youtube.com/" + url);
+            }
         } else {
             Toast.makeText(this, "This person does not have a Youtube page.", Toast.LENGTH_LONG).show();
             return;
