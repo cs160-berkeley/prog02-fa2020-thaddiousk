@@ -9,7 +9,7 @@
     tools:context=".MainActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout"
+        android:id="@+id/titleLayout"
         android:layout_width="match_parent"
         android:layout_height="90dp"
         android:background="#3F88C5"
@@ -18,7 +18,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/splashTitle"
             android:layout_width="218dp"
             android:layout_height="65dp"
             android:background="@drawable/rounded_red_border_white_bg"
@@ -41,14 +41,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
-        app:layout_constraintVertical_bias="0.025" />
+        app:layout_constraintTop_toBottomOf="@+id/titleLayout"
+        app:layout_constraintVertical_bias="0.06" />
 
     <Button
         android:id="@+id/currentLocation"
         android:layout_width="218dp"
         android:layout_height="45dp"
         android:background="@drawable/rounded_blue_border_green_bg"
+        android:elevation="5dp"
         android:fontFamily="@font/rationale"
         android:onClick="curLocationSearch"
         android:text="Current Location"
@@ -94,6 +95,7 @@
             android:layout_width="68dp"
             android:layout_height="68dp"
             android:background="@drawable/rounded_blue_border_green_bg"
+            android:elevation="5dp"
             android:onClick="addressSearch"
             android:text="||"
             android:textSize="28sp"
@@ -114,6 +116,7 @@
         android:layout_width="218dp"
         android:layout_height="45dp"
         android:background="@drawable/rounded_blue_border_green_bg"
+        android:elevation="5dp"
         android:fontFamily="@font/rationale"
         android:onClick="randomSearch"
         android:text="Random Location"

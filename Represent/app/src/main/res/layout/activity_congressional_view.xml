@@ -19,7 +19,7 @@
         tools:context=".CongressionalView">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/constraintLayout"
+            android:id="@+id/titleLayout"
             android:layout_width="match_parent"
             android:layout_height="90dp"
             android:background="#E94F37"
@@ -28,7 +28,7 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <TextView
-                android:id="@+id/textView2"
+                android:id="@+id/splashTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="65dp"
                 android:background="@drawable/rounded_red_border_blue_bg"
@@ -51,9 +51,10 @@
                 android:layout_marginTop="16dp"
                 android:background="@drawable/rounded_blue_border_green_bg"
                 android:clickable="true"
+                android:elevation="5dp"
                 android:minHeight="?attr/actionBarSize"
                 android:onClick="back"
-                app:layout_constraintEnd_toStartOf="@+id/textView2"
+                app:layout_constraintEnd_toStartOf="@+id/splashTitle"
                 app:layout_constraintHorizontal_bias="0.10"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -64,6 +65,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="18dp"
                 android:layout_marginTop="20dp"
+                android:elevation="5dp"
                 android:scaleX="2"
                 android:scaleY="2"
                 app:layout_constraintStart_toStartOf="@+id/toolbar"
@@ -79,20 +81,22 @@
                 android:alpha="1"
                 android:background="@drawable/rounded_blue_border_green_bg"
                 android:clickable="true"
+                android:elevation="5dp"
                 android:onClick="votingInfo"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
                 android:id="@+id/bulb"
-                android:layout_width="55dp"
-                android:layout_height="55dp"
-                android:layout_marginBottom="3dp"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_marginBottom="8dp"
                 android:elevation="2dp"
                 app:layout_constraintBottom_toBottomOf="@+id/infoAlert"
                 app:layout_constraintEnd_toEndOf="@+id/infoAlert"
                 app:layout_constraintStart_toStartOf="@+id/infoAlert"
                 app:layout_constraintTop_toTopOf="@+id/infoAlert"
+                app:layout_constraintVertical_bias="1.0"
                 app:srcCompat="@drawable/bulbexclamation" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -106,7 +110,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
+            app:layout_constraintTop_toBottomOf="@+id/titleLayout">
 
             <TextView
                 android:id="@+id/textView3"
@@ -134,7 +138,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.23"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
+            app:layout_constraintTop_toBottomOf="@+id/titleLayout">
 
             <ImageView
                 android:id="@+id/s1Photo"
@@ -175,6 +179,7 @@
                 android:layout_height="30dp"
                 android:layout_marginLeft="33dp"
                 android:background="@drawable/rounded_blue_border_green_bg"
+                android:elevation="5dp"
                 android:fontFamily="@font/condiment"
                 android:onClick="s1More"
                 android:paddingTop="9dp"
@@ -191,7 +196,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.77"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
+            app:layout_constraintTop_toBottomOf="@+id/titleLayout">
 
             <ImageView
                 android:id="@+id/s2Photo"
@@ -232,6 +237,7 @@
                 android:layout_height="30dp"
                 android:layout_marginLeft="33dp"
                 android:background="@drawable/rounded_blue_border_green_bg"
+                android:elevation="5dp"
                 android:fontFamily="@font/condiment"
                 android:onClick="s2More"
                 android:paddingTop="9dp"
@@ -292,6 +298,7 @@
                 android:layout_height="30dp"
                 android:layout_marginLeft="33dp"
                 android:background="@drawable/rounded_blue_border_green_bg"
+                android:elevation="2dp"
                 android:fontFamily="@font/condiment"
                 android:onClick="repMore"
                 android:paddingTop="9dp"
@@ -311,7 +318,7 @@
             android:textAlignment="center"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
+            app:layout_constraintTop_toBottomOf="@+id/titleLayout">
 
             <TextView
                 android:id="@+id/textView4"
@@ -335,7 +342,6 @@
                 android:background="@drawable/rounded_blue_border_red_bg"
                 android:clickable="false"
                 android:fontFamily="@font/condiment"
-                android:onClick="noInfo"
                 android:paddingBottom="0dp"
                 android:text="No"
                 android:textColor="#F6F7EB"
@@ -353,7 +359,6 @@
                 android:background="@drawable/rounded_blue_border_green_bg"
                 android:clickable="false"
                 android:fontFamily="@font/condiment"
-                android:onClick="moreInfo"
                 android:paddingBottom="0dp"
                 android:text="yes"
                 android:textColor="#F6F7EB"

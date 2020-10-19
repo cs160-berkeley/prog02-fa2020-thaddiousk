@@ -60,6 +60,10 @@ public class VotingInfo extends AppCompatActivity {
         fillPollingLocations(curLoc);
     }
 
+    public Context getContext()
+    {
+        return this;
+    }
     public void fillDropOffLocations(LatLng curLocation) {
         TextView dropOffText = findViewById(R.id.dropOffText);
         if (dropLocationsMap.size() > 0) {
@@ -141,6 +145,13 @@ public class VotingInfo extends AppCompatActivity {
         if (returnTo.equals("CongressionalView")) {
             Intent intent = new Intent(this, CongressionalView.class);
             intent.putExtra("address", "address");
+            finish();
+            startActivity(intent);
+        } else {
+            Intent intent = new Intent(this, DetailedView.class);
+            intent.putExtra("address", "address");
+            int repNum = this.getIntent().getIntExtra("rep", 1);
+            intent.putExtra("rep", repNum);
             finish();
             startActivity(intent);
         }

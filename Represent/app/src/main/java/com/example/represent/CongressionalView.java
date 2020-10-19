@@ -240,15 +240,31 @@ public class CongressionalView extends AppCompatActivity {
         animation.cancel();
 
         // Bring info view to front.
-        Button infoAlert = findViewById(R.id.infoAlert);
-        infoAlert.animate().alpha(0f).setDuration(1000).start();
+        ImageView bulb = findViewById(R.id.bulb);
+        bulb.animate().alpha(0f).setDuration(1000).start();
         ConstraintLayout votingView = findViewById(R.id.votingView);
         votingView.animate().alpha(1f).setDuration(1000).start();
         votingView.bringToFront();
         Button yes = findViewById(R.id.yes);
         yes.setClickable(true);
+        yes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    moreInfo(view);
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
         Button no = findViewById(R.id.no);
         no.setClickable(true);
+        no.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                noInfo(view);
+            }
+        });
 
         // Prevent clicking on buried images/buttons.
         ImageView s1Photo = findViewById(R.id.s1Photo);
