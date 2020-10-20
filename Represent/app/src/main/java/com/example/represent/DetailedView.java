@@ -11,6 +11,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
@@ -114,7 +115,7 @@ public class DetailedView extends AppCompatActivity {
         textView2.setText(curRep.get("name"));
 
         TextView partyState = findViewById(R.id.partyState);
-        partyState.setText(curRep.get("party") + " (" + curRep.get("location") + ")");
+        partyState.setText(curRep.get("party").replace(" Party", "").replace("ic Party", "") + " (" + curRep.get("location") + ")");
 
         Button phone = findViewById(R.id.phone);
         try {
@@ -133,6 +134,15 @@ public class DetailedView extends AppCompatActivity {
     }
 
     public void back(View view) {
+        Intent intent = new Intent(this, CongressionalView.class);
+        intent.putExtra("address", "address");
+        finish();
+        startActivity(intent);
+    }
+
+    @Override
+    public void onBackPressed() {
+        Log.d("CDA", "onBackPressed Called");
         Intent intent = new Intent(this, CongressionalView.class);
         intent.putExtra("address", "address");
         finish();

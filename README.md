@@ -1,12 +1,11 @@
 # PROG 02: Represent!
 
-Brief description here
+A civic information application.
 
 ## Author
 
-FirstName LastName (email@berkeley.edu)
+Thaddious Kennedy (bluejacensolo@berkeley.edu)
 
 ## Video Link
 
-youtube.com/yourLinkAddress
-
+https://youtu.be/KMkMs4PwBaA

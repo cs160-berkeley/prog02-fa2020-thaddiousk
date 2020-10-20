@@ -19,13 +19,14 @@
 
     <TextView
         android:id="@+id/splashTitle"
-        android:layout_width="250dp"
-        android:layout_height="85dp"
+        android:layout_width="wrap_content"
+        android:layout_height="101dp"
         android:alpha="0"
         android:background="@drawable/rounded_red_border_white_bg"
-        android:fontFamily="@font/condiment"
+        android:fontFamily="@font/sansitaswashed"
         android:text="Represent!"
         android:textAlignment="center"
+        android:textColor="#2C1717"
         android:textSize="50sp"
         app:layout_constraintBottom_toTopOf="@+id/videoSplash"
         app:layout_constraintEnd_toEndOf="parent"

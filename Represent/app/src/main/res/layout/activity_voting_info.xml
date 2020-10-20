@@ -5,6 +5,7 @@
     android:id="@+id/infoWindow"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#F6F7EB"
     android:clickable="false"
     android:scrollIndicators="right"
     android:scrollbarDefaultDelayBeforeFade="500"
@@ -30,10 +31,10 @@
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
-                android:layout_width="65dp"
-                android:layout_height="63dp"
-                android:layout_marginLeft="14dp"
-                android:layout_marginTop="14dp"
+                android:layout_width="54dp"
+                android:layout_height="54dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
                 android:background="@drawable/rounded_red_border_blue_bg"
                 android:clickable="true"
                 android:minHeight="?attr/actionBarSize"
@@ -47,10 +48,12 @@
                 android:id="@+id/imageView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="18dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginStart="12dp"
+                android:layout_marginEnd="14dp"
                 android:scaleX="2"
                 android:scaleY="2"
+                app:layout_constraintBottom_toBottomOf="@+id/toolbar"
+                app:layout_constraintEnd_toEndOf="@+id/toolbar"
                 app:layout_constraintStart_toStartOf="@+id/toolbar"
                 app:layout_constraintTop_toTopOf="@+id/toolbar"
                 app:srcCompat="@drawable/abc_vector_test" />
@@ -58,15 +61,13 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:background="@drawable/rounded_blue_border_red_bg"
-                android:fontFamily="@font/condiment"
-                android:paddingTop="18dp"
-                android:text="US 2020 General Election"
-                android:textColor="#F6F7EB"
-                android:textSize="24sp"
+                android:layout_marginTop="24dp"
+                android:fontFamily="@font/sansitaswashed"
+                android:text="2020 General Election"
+                android:textColor="#2C1717"
+                android:textSize="28sp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintHorizontal_bias="0.601"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -118,6 +119,7 @@
                 android:fontFamily="@font/rationale"
                 android:text="TextView"
                 android:textAlignment="center"
+                android:textColor="#F6F7EB"
                 android:textSize="18sp" />
         </ScrollView>
 
@@ -138,6 +140,7 @@
                 android:fontFamily="@font/rationale"
                 android:text="TextView"
                 android:textAlignment="center"
+                android:textColor="#F6F7EB"
                 android:textSize="18sp" />
         </ScrollView>
     </androidx.constraintlayout.widget.ConstraintLayout>

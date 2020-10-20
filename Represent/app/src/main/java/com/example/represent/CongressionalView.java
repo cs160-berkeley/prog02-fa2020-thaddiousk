@@ -236,6 +236,15 @@ public class CongressionalView extends AppCompatActivity {
         startActivity(intent);
     }
 
+    @Override
+    public void onBackPressed() {
+        Log.d("CDA", "onBackPressed Called");
+        Intent intent = new Intent(getContext(), MainActivity.class);
+        intent.putExtra("address", "address");
+        finish();
+        startActivity(intent);
+    }
+
     public void votingInfo(View view) {
         animation.cancel();
 

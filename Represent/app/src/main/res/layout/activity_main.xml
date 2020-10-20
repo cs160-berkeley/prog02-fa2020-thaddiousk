@@ -19,18 +19,19 @@
 
         <TextView
             android:id="@+id/splashTitle"
-            android:layout_width="218dp"
-            android:layout_height="65dp"
-            android:background="@drawable/rounded_red_border_white_bg"
-            android:fontFamily="@font/condiment"
+            android:layout_width="wrap_content"
+            android:layout_height="78dp"
+            android:fontFamily="@font/sansitaswashed"
             android:text="Represent!"
             android:textAlignment="center"
-            android:textSize="40sp"
+            android:textColor="#F6F7EB"
+            android:textSize="44sp"
+            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <VideoView
@@ -54,6 +55,7 @@
         android:onClick="curLocationSearch"
         android:text="Current Location"
         android:textAlignment="center"
+        android:textColor="#2C1717"
         android:textSize="22sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -86,7 +88,7 @@
                 android:hint="address/zip"
                 android:inputType="textPostalAddress"
                 android:textAlignment="center"
-                android:textSize="18dp" />
+                android:textSize="24dp" />
 
         </ScrollView>
 
@@ -121,6 +123,7 @@
         android:onClick="randomSearch"
         android:text="Random Location"
         android:textAlignment="center"
+        android:textColor="#2C1717"
         android:textSize="22sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

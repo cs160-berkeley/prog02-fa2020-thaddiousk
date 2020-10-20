@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -142,6 +143,24 @@ public class VotingInfo extends AppCompatActivity {
     }
 
     public void back(View view) {
+        if (returnTo.equals("CongressionalView")) {
+            Intent intent = new Intent(this, CongressionalView.class);
+            intent.putExtra("address", "address");
+            finish();
+            startActivity(intent);
+        } else {
+            Intent intent = new Intent(this, DetailedView.class);
+            intent.putExtra("address", "address");
+            int repNum = this.getIntent().getIntExtra("rep", 1);
+            intent.putExtra("rep", repNum);
+            finish();
+            startActivity(intent);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        Log.d("CDA", "onBackPressed Called");
         if (returnTo.equals("CongressionalView")) {
             Intent intent = new Intent(this, CongressionalView.class);
             intent.putExtra("address", "address");

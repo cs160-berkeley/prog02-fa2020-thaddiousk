@@ -6,6 +6,7 @@
     android:id="@+id/infoWindow"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#F6F7EB"
     android:clickable="false"
     android:scrollIndicators="right"
     android:scrollbarDefaultDelayBeforeFade="500"
@@ -29,33 +30,33 @@
 
             <TextView
                 android:id="@+id/splashTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="65dp"
-                android:background="@drawable/rounded_red_border_blue_bg"
-                android:fontFamily="@font/condiment"
+                android:layout_width="179dp"
+                android:layout_height="66dp"
+                android:fontFamily="@font/sansitaswashed"
                 android:paddingTop="18dp"
                 android:text="Your Senators"
                 android:textAlignment="center"
-                android:textSize="24sp"
+                android:textColor="#F6F7EB"
+                android:textSize="28sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.333" />
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="65dp"
                 android:layout_height="63dp"
                 android:layout_marginLeft="14dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="14dp"
                 android:background="@drawable/rounded_blue_border_green_bg"
                 android:clickable="true"
                 android:elevation="5dp"
                 android:minHeight="?attr/actionBarSize"
                 android:onClick="back"
                 app:layout_constraintEnd_toStartOf="@+id/splashTitle"
-                app:layout_constraintHorizontal_bias="0.10"
+                app:layout_constraintHorizontal_bias="0.018"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -76,7 +77,7 @@
                 android:id="@+id/infoAlert"
                 android:layout_width="65dp"
                 android:layout_height="63dp"
-                android:layout_marginTop="18dp"
+                android:layout_marginTop="14dp"
                 android:layout_marginEnd="16dp"
                 android:alpha="1"
                 android:background="@drawable/rounded_blue_border_green_bg"
@@ -114,19 +115,20 @@
 
             <TextView
                 android:id="@+id/textView3"
-                android:layout_width="wrap_content"
-                android:layout_height="65dp"
-                android:background="@drawable/rounded_red_border_blue_bg"
-                android:fontFamily="@font/condiment"
+                android:layout_width="309dp"
+                android:layout_height="68dp"
+                android:fontFamily="@font/sansitaswashed"
                 android:paddingTop="18dp"
                 android:text="Your Representative"
                 android:textAlignment="center"
-                android:textSize="24sp"
+                android:textColor="#F6F7EB"
+                android:textSize="28sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintHorizontal_bias="0.497"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.157" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <LinearLayout
@@ -155,7 +157,8 @@
                 android:layout_height="31dp"
                 android:fontFamily="@font/rationale"
                 android:text="name"
-                android:textAlignment="center" />
+                android:textAlignment="center"
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/s1Party"
@@ -163,7 +166,8 @@
                 android:layout_height="31dp"
                 android:fontFamily="@font/rationale"
                 android:text="party"
-                android:textAlignment="center" />
+                android:textAlignment="center"
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/s1State"
@@ -171,21 +175,22 @@
                 android:layout_height="31dp"
                 android:fontFamily="@font/rationale"
                 android:text="state"
-                android:textAlignment="center" />
+                android:textAlignment="center"
+                android:textSize="18sp" />
 
             <Button
                 android:id="@+id/s1Link"
-                android:layout_width="70dp"
-                android:layout_height="30dp"
-                android:layout_marginLeft="33dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="25dp"
                 android:background="@drawable/rounded_blue_border_green_bg"
                 android:elevation="5dp"
                 android:fontFamily="@font/condiment"
                 android:onClick="s1More"
-                android:paddingTop="9dp"
                 android:text="more..."
                 android:textAlignment="center"
-                android:textSize="10sp" />
+                android:textColor="#2C1717"
+                android:textSize="16sp" />
         </LinearLayout>
 
         <LinearLayout
@@ -213,7 +218,8 @@
                 android:layout_height="31dp"
                 android:fontFamily="@font/rationale"
                 android:text="name"
-                android:textAlignment="center" />
+                android:textAlignment="center"
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/s2Party"
@@ -221,7 +227,8 @@
                 android:layout_height="31dp"
                 android:fontFamily="@font/rationale"
                 android:text="party"
-                android:textAlignment="center" />
+                android:textAlignment="center"
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/s2State"
@@ -229,21 +236,22 @@
                 android:layout_height="31dp"
                 android:fontFamily="@font/rationale"
                 android:text="state"
-                android:textAlignment="center" />
+                android:textAlignment="center"
+                android:textSize="18sp" />
 
             <Button
                 android:id="@+id/s2Link"
-                android:layout_width="70dp"
-                android:layout_height="30dp"
-                android:layout_marginLeft="33dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="25dp"
                 android:background="@drawable/rounded_blue_border_green_bg"
                 android:elevation="5dp"
                 android:fontFamily="@font/condiment"
                 android:onClick="s2More"
-                android:paddingTop="9dp"
                 android:text="more..."
                 android:textAlignment="center"
-                android:textSize="10sp" />
+                android:textColor="#2C1717"
+                android:textSize="16sp" />
 
         </LinearLayout>
 
@@ -274,7 +282,8 @@
                 android:layout_height="31dp"
                 android:fontFamily="@font/rationale"
                 android:text="name"
-                android:textAlignment="center" />
+                android:textAlignment="center"
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/rParty"
@@ -282,7 +291,8 @@
                 android:layout_height="31dp"
                 android:fontFamily="@font/rationale"
                 android:text="party"
-                android:textAlignment="center" />
+                android:textAlignment="center"
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/rDistrict"
@@ -290,21 +300,22 @@
                 android:layout_height="31dp"
                 android:fontFamily="@font/rationale"
                 android:text="district"
-                android:textAlignment="center" />
+                android:textAlignment="center"
+                android:textSize="18sp" />
 
             <Button
                 android:id="@+id/rLink"
-                android:layout_width="70dp"
-                android:layout_height="30dp"
-                android:layout_marginLeft="33dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="25dp"
                 android:background="@drawable/rounded_blue_border_green_bg"
                 android:elevation="2dp"
                 android:fontFamily="@font/condiment"
                 android:onClick="repMore"
-                android:paddingTop="9dp"
                 android:text="more..."
                 android:textAlignment="center"
-                android:textSize="10sp" />
+                android:textColor="#2C1717"
+                android:textSize="16sp" />
 
         </LinearLayout>
 
